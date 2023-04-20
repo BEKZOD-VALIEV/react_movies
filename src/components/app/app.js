@@ -5,7 +5,13 @@ import MoviesAddForm from '../movies-add-form/movies-add-form'
 import SearchPanel from '../search-panel/search-panel'
 import './app.css'
 
-function App() {
+const App = () => {
+	const data = [
+		{ name: 'Empire of Osman', viewers: 811, favourite: false, id: 1 },
+		{ name: 'Ertugrul', viewers: 789, favourite: false, id: 2 },
+		{ name: 'Osman', viewers: 1091, favourite: true, id: 3 },
+	]
+
 	return (
 		<div className='app font-monospace'>
 			<div className='content'>
@@ -14,7 +20,7 @@ function App() {
 					<SearchPanel />
 					<AppFilter />
 				</div>
-				<MovieList />
+				<MovieList data={data} />
 				<MoviesAddForm />
 			</div>
 		</div>
