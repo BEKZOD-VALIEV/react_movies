@@ -1,63 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import AppFilter from '../app-filter/app-filter'
 import AppInfo from '../app-info/app-info'
 import MovieList from '../movie-list/movie-list'
 import MoviesAddForm from '../movies-add-form/movies-add-form'
 import SearchPanel from '../search-panel/search-panel'
-import { v4 as uuidv4 } from 'uuid';
-
+import { Context } from '../../context'
 
 import './app.css'
 
 const App = () => {
-	const [data, setDate] = useState([])
-	const [term, setTerm] = useState('')
-	const [filter, setFilter] = useState('all')
 	const [isLoading, setIsLoading] = useState(false)
 
-	const onDelete = id => {
-		const newArr = data.filter(c => c.id !== id)
-		setDate(newArr)
-	}
-
-	const addForm = item => {
-		const newItem = { name: item.name, viewers: item.viewers, id: uuidv4(), favourite: false, like: false }
-		const newArr = [...data, newItem]
-		setDate(newArr)
-	}
-
-	const onToggleProp = (id, prop) => {
-		const newArr = data.map(item => {
-			if (item.id === id) {
-				return { ...item, [prop]: !item[prop] }
-			}
-			return item
-		})
-		setDate(newArr)
-	}
-
-	const searchHandler = (arr, term) => {
-		if (term === 0) {
-			return arr
-		}
-
-		return arr.filter(item => item.name.toLowerCase().indexOf(term) > -1)
-	}
-
-	const filterHandler = (arr, filter) => {
-		switch (filter) {
-			case 'popular':
-				return arr.filter(c => c.like)
-			case 'mostViewers':
-				return arr.filter(c => c.viewers > 800)	
-			default:
-				return arr	
-		}
-	}
-
-	const updateTermHandler = term => setTerm(term)
-
-	const updateFilterHandler = filter => setFilter(filter)
+	const { _, dispatch } = useContext(Context)
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -72,7 +26,7 @@ const App = () => {
 					favourite: false,
 					like: false,
 				}))
-				setDate(newArr)
+				dispatch({ type: 'GET_DATA', payload: newArr })
 			})
 			.catch(err => console.log(err))
 			.finally(() => setIsLoading(false))
@@ -81,14 +35,14 @@ const App = () => {
 	return (
 		<div className='app font-monospace'>
 			<div className='content'>
-				<AppInfo allMoviesCount={data.length} favouriteMovieCount={data.filter(c => c.favourite).length} />
+				<AppInfo />
 				<div className='search-panel'>
-					<SearchPanel updateTermHandler={updateTermHandler} />
-					<AppFilter filter={filter} updateFilterHandler={updateFilterHandler} />
+					<SearchPanel />
+					<AppFilter />
 				</div>
 				{isLoading && 'Loading...'}
-				<MovieList onToggleProp={onToggleProp} data={filterHandler(searchHandler(data, term), filter)} onDelete={onDelete}/>
-				<MoviesAddForm addForm={addForm}/>
+				<MovieList />
+				<MoviesAddForm />
 			</div>
 		</div>
 	)

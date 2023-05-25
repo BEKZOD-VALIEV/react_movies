@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { Context } from '../../context'
 import './movies-add-form.css'
 
-const MoviesAddForm = ({ addForm }) => {
+const MoviesAddForm = () => {
 	const [state, setState] = useState({ name: '', views: '' })
+
+	const { _, dispatch } = useContext(Context)
 
 	const changeHandlerInput = e => setState({ ...state, [e.target.name]: e.target.value })
 
@@ -10,7 +13,7 @@ const MoviesAddForm = ({ addForm }) => {
 		e.preventDefault()
 		if (state.name === '' || state.views === '') return
 		const data = { name: state.name, viewers: state.views }
-		addForm(data)
+		dispatch({ type: 'ADD_FORM', payload: data })
 		setState({ name: '', views: '' })
 	}
 
